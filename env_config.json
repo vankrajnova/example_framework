@@ -1,0 +1,14 @@
+{
+    "config":
+        {
+            "ip": "10.210.48.16",
+            "port": "32737",
+
+            "admin_login": "administrator",
+            "admin_pwd": "5ecr3t",
+            "browser": "chrome",
+            "interactive_mode": true
+
+        },
+    "action_mode": "UI"
+}
