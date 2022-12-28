@@ -1,6 +1,6 @@
 from selenium.webdriver.remote.webelement import WebElement as _webelement_
 
-from time import time, sleep
+from time import sleep
 
 from .config import *
 

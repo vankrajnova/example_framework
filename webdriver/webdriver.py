@@ -38,7 +38,7 @@ else:
 """ make options"""
 options.add_argument(f"window-size={window_size[0]}x{window_size[1]}")
 # options.capabilities['goog:loggingPrefs'] = {'performance': 'ALL'}  # Включить логи
-if not config["interactive_dode"]:
+if not config["interactive_mode"]:
     options.add_argument("--no-sandbox")
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")

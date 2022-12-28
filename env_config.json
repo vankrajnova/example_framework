@@ -7,8 +7,8 @@
             "admin_login": "administrator",
             "admin_pwd": "5ecr3t",
             "browser": "chrome",
-            "interactive_mode": true
+            "interactive_mode": false
 
         },
-    "action_mode": "UI"
+    "action_mode": "REST"
 }
