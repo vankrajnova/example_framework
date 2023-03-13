@@ -5,6 +5,8 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver import ChromeOptions, FirefoxOptions
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+
 from .webelement import WebElement
 
 from root_dir_path import ROOT_DIR
@@ -92,3 +94,22 @@ class WebDriver(_webdriver_):
 
     def find_element_by_xpath(self, xpath: str, timeout=TIMEOUT, steptime=STEPTIME, check=False) -> WebElement:
         return self.find_element(By.XPATH, xpath, timeout, steptime, check)
+
+    def wait_data_loading(self, network=False):
+        script = "return Object.keys(Ext.Ajax.requests).length === 0"
+        xpath = '//div[contains(@class,"x-component mask-cssload-loader x-mask x-component-default")]'
+        start = time()
+        sleep(.05)
+        while time() - start < 15:
+            loading = self.find_element_by_xpath(xpath, timeout=.1, check=True)
+            loading_style = loading.get_attribute("style") if loading is not None else ''
+            if not network and loading is not None and loading_style is not None:
+                if 'display: none;' not in loading_style:
+                    sleep(.1)
+                    continue
+                else:
+                    sleep(.5)
+                    break
+            elif self.execute_script(script):
+                sleep(.5)
+                break

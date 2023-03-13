@@ -1,138 +1,131 @@
+import functools
+import time
 from json import JSONDecodeError
-from time import time, sleep
-
+from typing import Callable
+from urllib.parse import urljoin
 import requests
+from backoff import on_exception, expo
 
+from model.user import User
 from rest.exceptions import error_by_status_code
-from useful_methods.representation import json_as_pretty_str
+
+from useful_methods.representation import pretty_json, shorten_str
 
 
 TIMEOUT = 60
-STEPTIME = 0.2
+STEP_TIME = 0.2
 
 
 class RestTransaction:
-    def __init__(self, app, transaction_name):
-        self._config = app.config
+
+    def __init__(self, app, transaction_name: str):
+        self._app = app
         self.name = transaction_name
-        self._request_url = None
-        self._request_json = None
-        self._request_headers = None
         self.response = None
-        self.events = [f'## Транзакция (REST): {self.name}\n']
+        self.event_log = [f"\nТранзакция: {self.name}"]
+        self.rest_session = requests.session()
 
     def clean_log(self):
-        self._request_url = None
-        self._request_json = None
-        self.response = None
-        self.events = []
-        self.events.append(f'## Транзакция (REST): {self.name}\n')
+        self.__init__(self._app, self.name)
 
-    def add_event(self, event_message):
-        self.events.append(f'# {event_message}\n')
+    def add_event(self, event_message: str):
+        self.event_log.append(event_message)
 
-    def add_info(self, info_message):
-        self.events.append(info_message.lstrip())
+    @staticmethod
+    def logger(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(self, *args, **kwargs):
+            self.event_log.append(f"method = {args[0]}")
+            self.event_log.append(f"path = {args[1]}")
+            if "data" in kwargs:
+                self.event_log.append(pretty_json(kwargs["data"]))
+            if "headers" in kwargs:
+                self.event_log.append(str(kwargs["headers"]))
+            if "json" in kwargs:
+                self.event_log.append(f'request json: \n{pretty_json(kwargs["json"])}')
+            result = func(self, *args, **kwargs)
+            self.event_log.append(f"response: \n{shorten_str(pretty_json(result))}")
+            return result
 
-    def set_request_url(self, request_url):
-        self._request_url = request_url
-        self.add_info(f'request_url = {self._request_url}')
+        return wrapper
 
-    def set_request_json(self, request_json):
-        self._request_json = request_json
-        self.add_info(f'request_json: \n{json_as_pretty_str(self._request_json)}')
+    @on_exception(expo, requests.exceptions.HTTPError, max_tries=5)
+    def auth(self, logged_in_user: User = None) -> dict:
+        login = logged_in_user.info.account_name if logged_in_user else "administrator"
+        password = logged_in_user.info.password if logged_in_user else "5ecr3t"
+        url_for_auth = urljoin(
+            self._app.config.host, f"inrights/api/auth/login?login={login}&password={password}"
+        )
+        response = self.rest_session.post(url_for_auth)
+        response.raise_for_status()
+        return response.json()
 
-    def set_request_headers(self, request_headers):
-        self._request_headers = request_headers
-        self.add_info(f'request_headers: \n{json_as_pretty_str(self._request_headers)}')
+    def logout(self):
+        url_for_logout = urljoin(self._app.config.host, "inrights/api/auth/logout")
+        self.rest_session.post(url_for_logout)
 
-    def _send_request(self, request_type="GET", url=None, json=None, headers=None,
-                      login="administrator", password="5ecr3t"):
-        url_for_auth = fr'{self._config.host}/inrights/api/auth/login?login={login}&password={password}'
-        rest_session = requests.session()
-        request_by_type = {"GET": rest_session.get, "POST": rest_session.post, "PUT": rest_session.put,
-                           "DELETE": rest_session.delete}
+    @logger
+    def call_request(
+            self, request_type: str, path: str, logged_in_user: User = None, **kwargs
+    ) -> dict | str:
         try:
-            start = time()
-            while time() - start < 2:
-                response = rest_session.post(url_for_auth)
-                if response.status_code == 200:
-                    break
-                else:
-                    sleep(.05)
-            response = request_by_type[request_type](url, json=json, headers=headers)
-            start = time()
-            while (time() - start) < 5:
-                if response.content is not None:
-                    return response
-                else:
-                    sleep(.05)
+            self.auth(logged_in_user=logged_in_user)
+            self.response = self.rest_session.request(
+                request_type, urljoin(self._app.config.host, path), **kwargs
+            )
+            self.handle_status()
+            return self.response.json()
+        except JSONDecodeError:
+            return self.response.text
         finally:
-            rest_session.post(url=fr'{self._config.host}/inrights/api/auth/logout')
+            self.logout()
 
-    def call_request(self, request_type, logged_in_user=None):
-        if logged_in_user is None:
-            self.response = self._send_request(request_type=request_type, url=self._request_url,
-                                               json=self._request_json, headers=self._request_headers)
-        else:
-            self.response = self._send_request(request_type=request_type, url=self._request_url,
-                                               json=self._request_json, headers=self._request_headers,
-                                               login=logged_in_user.account_name, password=logged_in_user.password)
-        """Добавлено ожидание тела запроса"""
-        timeout = 5
-        start_time = time()
-        while (time() - start_time) < timeout:
-            if self.response.text is None:
-                sleep(.05)
-            else:
-                break
-        try:
-            self.add_info(f'response: \n{json_as_pretty_str(self.response.json())}')
-        except JSONDecodeError:
-            self.add_info(f'response: "{self.response.text}"')
+    def handle_status(self):
+        if 400 <= self.response.status_code < 600:
+            self.event_log.append(
+                f"response: \n{shorten_str(pretty_json(self.response.json()))}"
+            )
+            self.raise_exception(
+                exception=error_by_status_code(self.response.status_code)
+            )
 
-        # new handler of status codes. Raise only 4XX and 5XX.
-        self.raise_exception(exception=error_by_status_code(self.response.status_code))
-
-        try:
-            if self.response.text not in ['', 'File delete']:
-                if len(self.response.text) != 36:
-                    self.response.json()
-        except JSONDecodeError:
-            raise Exception(f'Не удалось распарсить json.\n{self.get_log()}')
-        return self.response
-
-    def raise_exception(self, exception_message=None, exception=None):
+    def raise_exception(
+            self, exception_message: str = None, exception: Exception = None
+    ):
+        self.print_log()
         if exception:
-            self.print_log()
             raise exception
         elif exception_message:
-            self.print_log()
             raise Exception(exception_message)
 
+    def check_items(self) -> list[dict]:
+        try:
+            return self.response.json()["items"]
+        except KeyError:
+            self.raise_exception('В ответе нет ключа "items"')
+
     def print_log(self):
-        print()
-        print('\n'.join(self.events))
+        print("\n".join(self.event_log))
 
-    def get_log(self):
-        return '\n' + '\n'.join(self.events)
+    def get_log(self) -> str:
+        return "\n".join(self.event_log)
 
 
-def waiting():
-    def decorator(func):
+def wait(timeout: int = TIMEOUT, step_time: int | float = STEP_TIME) -> Callable:
+    def decorator(func: Callable):
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            start = time()
-            timeout = kwargs.get("TIMEOUT") if kwargs.get("TIMEOUT") is not None else TIMEOUT
-            steptime = kwargs.get("STEPTIME") if kwargs.get("STEPTIME") is not None else STEPTIME
-
+            start = time.time()
             last_error = None
 
-            while time() - start < timeout:
+            while (time.time() - start) < timeout:
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
                     last_error = e
-                    sleep(steptime)
+                    time.sleep(step_time)
             raise last_error
+
         return wrapper
+
     return decorator

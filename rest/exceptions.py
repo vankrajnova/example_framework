@@ -291,8 +291,6 @@ class HTTPVersionNotSupportedException(Exception):
         )
 
 
-# ???
-
 class AccessDeniedException(Exception):
 
     def __init__(self):

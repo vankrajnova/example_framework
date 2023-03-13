@@ -6,6 +6,9 @@ import datetime
 
 from fixture.app_config import make_app_config_from_json
 from fixture.application import Application
+from fixture.base_fixture import BaseFixture
+from fixture.db_mssql import MSSQL
+from fixture.db_postgresql import Postgresql
 from model.action_mode import ActionMode
 
 
@@ -35,8 +38,32 @@ def action_mode(request, config_as_json):
 
 
 @pytest.fixture(scope="session")
-def app_for_session(request, config, action_mode) -> Application:
-    application = Application(config, action_mode)
+def db(request, config_as_json, action_mode):
+    if action_mode != 'HR':
+        return None
+    db_config = config_as_json['db']
+    if db_config['type'] == 'postgresql':
+        db_fixture = Postgresql(host=db_config['host'], port=db_config['port'], name=db_config['name'],
+                                user=db_config['user'], pwd=db_config['pwd'])
+    else:
+        db_fixture = MSSQL(host=db_config['host'], port=db_config['port'], name=db_config['name'],
+                           user=db_config['user'], pwd=db_config['pwd'])
+    host = request.config.getoption("--host")
+    if host is not None:
+        db_fixture.host = host
+
+    def finalize():
+        if action_mode.global_mode != 'HR':
+            return
+        db_fixture.destroy()
+
+    request.addfinalizer(finalize)
+    return db_fixture
+
+
+@pytest.fixture(scope="session")
+def app_for_session(request, config, db, action_mode, base_fixture) -> Application:
+    application = Application(config, db, action_mode, base_fixture)
     application.initialize()
     request.addfinalizer(application.destroy)
     return application
@@ -48,6 +75,8 @@ def app(app_for_session, screenshot_on_failure) -> Application:
     if app_for_session.action_mode == 'UI':
         if not app_for_session.is_valid():
             app_for_session.initialize()
+        if not app_for_session.is_valid_inrights():
+            app_for_session.reopen()
     return app_for_session
 
 
@@ -57,13 +86,12 @@ def print_test_info(app_for_session):
     ip = app_for_session.config.ip
     dt = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
     browser = app_for_session.config.browser.title()
+    # db_type = app_for_session.config.inrights_db_type.title()
 
     if action_mode == 'UI':
         browser_version = app_for_session.driver.capabilities['browserVersion']
         info = f'\nТест запущен: "{dt}", сборка: "{build}", стенд: "{ip}", ' \
                f'браузер: "{browser} {browser_version}", action_mode: "{action_mode}"'
-        # if remote:
-        #     info += f', os: "{os}'
         print(info)
     else:
         info = f'\nТест запущен: "{dt}", сборка: "{build}", стенд: "{ip}", action_mode: "{action_mode}"'
@@ -88,8 +116,16 @@ def screenshot_on_failure(request, app_for_session, action_mode):
         elif request.node.rep_setup.passed:
             if request.node.rep_call.failed:
                 app_for_session.save_screenshot_on_failure()
+
     request.addfinalizer(fin)
 
+@pytest.fixture(scope="session")
+def base_fixture(config_as_json):
+    db_config = config_as_json['db']
+    if db_config['type'] == 'postgresql':
+        return BaseFixture('postgresql')
+    else:
+        return BaseFixture('mssql')
 
 def pytest_addoption(parser):
     parser.addoption("--file", action="store", default="./env_config.json")

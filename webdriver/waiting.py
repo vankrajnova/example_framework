@@ -8,9 +8,7 @@ def waiting():
             start = time()
             timeout = kwargs["TIMEOUT"] if kwargs.get("TIMEOUT") else TIMEOUT
             steptime = kwargs["STEPTIME"] if kwargs.get("STEPTIME") else STEPTIME
-
             last_error = None
-
             while time() - start < timeout:
                 try:
                     return func(*args, **kwargs)
@@ -22,4 +20,3 @@ def waiting():
         return wrapper
 
     return decorator
-
