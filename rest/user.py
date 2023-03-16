@@ -39,3 +39,4 @@ class UserRest:
         json = self._make_json_for_new_user(user)
 
         transaction.call_request("PUT", path, logged_in_user=logged_in_user, json=json)
+        return user

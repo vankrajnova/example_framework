@@ -6,6 +6,9 @@ class AppConfig(BaseModel):
     port: str
     admin_login: str
     admin_pwd: str
+    pwsh_ip: str
+    pwsh_login: str
+    pwsh_pwd: str
     browser: str
     interactive_mode: bool
 
@@ -20,6 +23,9 @@ def make_app_config_from_json(config_as_json):
         port=config_as_json["port"],
         admin_login=config_as_json["admin_login"],
         admin_pwd=config_as_json["admin_pwd"],
+        pwsh_ip=config_as_json["pwsh_ip"],
+        pwsh_login=config_as_json["pwsh_login"],
+        pwsh_pwd=config_as_json["pwsh_pwd"],
         interactive_mode=config_as_json["interactive_mode"],
         browser=config_as_json["browser"]
     )

@@ -49,3 +49,10 @@ def make_unique_suffix():
 
 def make_unique_name(prefix="A"):
     return f'{prefix}{make_unique_suffix()}'
+
+def generate_id_for_hr():
+    return ''.join(random.choice('qwertyuiopasdfghjklzxcvbnm') for i in range(4)) + \
+        ''.join(random.choice('0123456789') for i in range(4))
+
+def generate_phone_number():
+    return '+79' + str(''.join([random.choice(list('0123456789')) for x in range(9)]))

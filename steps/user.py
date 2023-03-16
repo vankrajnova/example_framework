@@ -21,15 +21,15 @@ class UserSteps:
                          f'с ТУ на должность "{user.employment.position.name}"'):
 
             if action_mode == 'HR':
-                pass
+                user = self._app.hr.user.create_user(user)
             elif action_mode == 'UI':
                 if logged_in_user:
                     self._app.forms.auth.login(logged_in_user.info.account_name, logged_in_user.info.password)
                 form_user_list = self._app.forms.open_form_user_list()
                 form_user_new = form_user_list.open_form_user_new()
-                form_user_new.create_user(user)
+                user = form_user_new.create_user(user)
             else:
-                self._app.rest.user.create_user(user, logged_in_user)
+                user = self._app.rest.user.create_user(user, logged_in_user)
 
             user.info.oid = self._app.rest.repository.get_user_oid(user.info.last_name)
             return user

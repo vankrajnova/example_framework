@@ -11,6 +11,7 @@ class UserInfo(BaseModel):
     first_name_eng: Optional[str] = "Ismail"
     additional_name_eng: Optional[str] = "Ibragimovich"
     birthdate: Optional[str] = "01.01.1990"
+    email: Optional[str] = Field(exclude=True)
     account_name: Optional[str]
     phone_number: Optional[str]
     password: Optional[str] = Field(exclude=True)
@@ -29,10 +30,6 @@ class UserInfo(BaseModel):
         return self.last_name < other.last_name
 
     @property
-    def email(self):
-        return f"{self.last_name.lower()}@inrights.local"
-
-    @property
     def full_name(self):
         names = [self.last_name, self.first_name]
         if self.additional_name is not None:
@@ -46,3 +43,7 @@ class UserInfo(BaseModel):
         if self.additional_name.strip() != "":
             last_name_and_initials += f"{self.additional_name[0]}."
         return last_name_and_initials
+
+    def add_email(self):
+        self.email = f"{self.last_name.lower()}@inrights.local"
+        return self.email

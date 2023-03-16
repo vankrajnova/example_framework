@@ -53,7 +53,7 @@ def db(request, config_as_json, action_mode):
         db_fixture.host = host
 
     def finalize():
-        if action_mode.global_mode != 'HR':
+        if action_mode != 'HR':
             return
         db_fixture.destroy()
 
@@ -132,3 +132,7 @@ def pytest_addoption(parser):
     parser.addoption("--host", action="store", default=None)
     parser.addoption("--action_mode", action="store", default=None)
     parser.addoption("--interactive_mode", action="store", default=None)
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "test_can_use_hr")

@@ -1,11 +1,5 @@
-import time
-
-from selenium.webdriver.support import expected_conditions as EC
-
 from forms.main import FormMain
 from webdriver import WebElement
-from webdriver.config import STEPTIME
-from webdriver.waiting import waiting as wait, waiting
 
 
 class FormLogin:

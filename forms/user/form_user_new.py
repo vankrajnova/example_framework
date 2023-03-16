@@ -11,6 +11,7 @@ class FormUserNew:
     def create_user(self, user: User):
         self._fill_form(user)
         self._save()
+        return user
 
     def _fill_form(self, user: User):
         self._fill_user_info(user)

@@ -14,3 +14,5 @@ class MSSQL:
 
     def destroy(self):
         self.connection.close()
+
+    # todo: сюда по аналогии с class Postgresql необходимо добавить методы для создания пользователя в БД

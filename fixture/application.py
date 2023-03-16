@@ -2,6 +2,7 @@ import allure
 from allure_commons.types import AttachmentType
 
 from forms.factory import FormFactory
+from helpers.factory import HelpersFactory
 from hr.hr_factory import HrFactory
 from rest.factory import RestFactory
 from rest.transaction import RestTransaction
@@ -20,6 +21,7 @@ class Application:
         self.rest = RestFactory(self)
         self.hr = HrFactory(self)
         self.steps = StepsFactory(self)
+        self.helpers = HelpersFactory(self)
         self._driver = None
 
     def initialize(self):
@@ -66,6 +68,7 @@ class Application:
             return False
 
     def destroy(self):
+        self.helpers.pwsh.close()
         if self.action_mode == 'UI':
             self.driver.quit()
 
