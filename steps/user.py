@@ -1,6 +1,7 @@
 import allure
 
 from model import User
+from useful_methods.representation import pretty_print
 
 
 class UserSteps:
@@ -32,4 +33,6 @@ class UserSteps:
                 user = self._app.rest.user.create_user(user, logged_in_user)
 
             user.info.oid = self._app.rest.repository.get_user_oid(user.info.last_name)
+
+            pretty_print("Created user: ", user)
             return user

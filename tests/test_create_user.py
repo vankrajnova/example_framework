@@ -30,4 +30,3 @@ def test_create_user_and_verify_ad_account(app, user):
     app.steps.ad.verify_account_exists(user.info.account_name)
 
     app.steps.ad.verify_account_status(user.info.account_name, enabled=True)
-
