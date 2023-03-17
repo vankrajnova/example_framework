@@ -62,7 +62,7 @@ class RepositoryRest:
             self, obj_type: str, obj_name: str, system_oid: str = None
     ) -> str | None:
         transaction = self._app.start_new_rest_transaction(
-            f'[REST] Получить oid объекта "{obj_name}" ({obj_type})'
+            f'Получить oid объекта "{obj_name}" ({obj_type})'
         )
         path = "/inrights/api/technical/objects/list"
         json = _make_json_for_filtering_repository_objects(

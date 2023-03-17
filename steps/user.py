@@ -36,3 +36,35 @@ class UserSteps:
 
             pretty_print("Created user: ", user)
             return user
+
+    def verify_user_in_user_list(self, user: User, logged_in_user: User = None):
+        step_name = f'[{self._app.action_mode}]' \
+                    f' [{"administrator" if not logged_in_user else logged_in_user.info.account_name}]' \
+                    f' Проверить атрибуты пользователя' \
+                    f' "{user.info.account_name}" в списке пользователей'
+
+        with allure.step(step_name):
+            if self._app.action_mode == "UI":
+                if logged_in_user:
+                    self._app.forms.auth.login(logged_in_user.info.account_name, logged_in_user.info.password)
+                form_user_list = self._app.forms.open_form_user_list()
+                form_user_list.find_user_by_last_name(user.info.last_name)
+                form_user_list.verify_fields(user)
+            else:
+                self._app.rest.user.verify_user_in_user_list(user)
+
+    def verify_user_base_info(self, user: User, logged_in_user: User = None):
+        step_name = f'[{self._app.action_mode}] ' \
+                    f'[{"administrator" if logged_in_user is None else logged_in_user.info.account_name}] ' \
+                    f'Проверить данные на вкладке "Информация о сотруднике" ' \
+                    f'в карточке пользователя "{user.info.account_name}"'
+
+        with allure.step(step_name):
+            if self._app.action_mode == "UI":
+                if logged_in_user is not None:
+                    self._app.forms.auth.login(logged_in_user.info.account_name, logged_in_user.info.password)
+                user_card = self._app.forms.open_form_user_card(user)
+                tab_base_info = user_card.open_tab_base_info()
+                tab_base_info.verify_user_base_info(user)
+            else:
+                self._app.rest.user.verify_user_base_info(user)

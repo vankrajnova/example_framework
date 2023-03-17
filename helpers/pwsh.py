@@ -25,7 +25,7 @@ class PowerShellHelper:
     def close(self):
         self._ssh.close()
 
-    def _is_session_valid(self):
+    def _is_session_valid(self) -> bool:
         try:
             if self._ssh.get_transport().authenticated:
                 return True

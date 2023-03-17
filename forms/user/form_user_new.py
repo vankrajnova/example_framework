@@ -21,7 +21,7 @@ class FormUserNew:
     def _fill_user_info(self, user: User):
         self._elements.find_element_by_name('lastName').send_keys(user.info.last_name)
         self._elements.find_element_by_name('firstName').send_keys(user.info.first_name)
-        self._elements.find_element_by_name('additionalName').send_keys(user.info.last_name)
+        self._elements.find_element_by_name('additionalName').send_keys(user.info.additional_name)
         self._elements.find_element_by_name('lastName_en').send_keys(user.info.last_name_eng)
         self._elements.find_element_by_name('firstName_en').send_keys(user.info.first_name_eng)
         self._elements.find_element_by_name('additionalName_en').send_keys(user.info.additional_name_eng)

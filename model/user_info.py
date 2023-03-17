@@ -11,13 +11,13 @@ class UserInfo(BaseModel):
     first_name_eng: Optional[str] = "Ismail"
     additional_name_eng: Optional[str] = "Ibragimovich"
     birthdate: Optional[str] = "01.01.1990"
-    email: Optional[str] = Field(exclude=True)
+    email: Optional[str]
     account_name: Optional[str]
     phone_number: Optional[str]
     password: Optional[str] = Field(exclude=True)
-    oid: Optional[str]
+    oid: Optional[str] = Field(exclude=True)
     hr_id: Optional[str] = Field(exclude=True)
-    risk_level: Optional[int] = Field(exclude=True)
+    risk_level: Optional[int]
 
     def __init__(self, **data):
         super().__init__(**data)
