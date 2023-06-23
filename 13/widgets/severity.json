@@ -1,0 +1,1 @@
+[{"uid":"d75d75a47cb22b09","name":"Автотест для проверки работы docker и github actions","time":{"start":1687528646833,"stop":1687528646833,"duration":0},"status":"passed","severity":"normal"},{"uid":"8f3acdc68a8a1cf6","name":"test","time":{"start":1687519303290,"stop":1687519303290,"duration":0},"status":"passed","severity":"normal"}]

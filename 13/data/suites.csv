@@ -1,0 +1,3 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Fri Jun 23 13:57:26 GMT 2023","Fri Jun 23 13:57:26 GMT 2023","0","tests","test_docker_and_ci","","","","Автотест для проверки работы docker и github actions",""
+"passed","Fri Jun 23 11:21:43 GMT 2023","Fri Jun 23 11:21:43 GMT 2023","0","tests","test_docker","","","","test",""
