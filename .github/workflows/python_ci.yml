@@ -39,7 +39,7 @@ jobs:
           allure-history: allure-history
 
       - name: Publish report
-        uses: peaceiris/allure-gh-pages@v2
+        uses: peaceiris/actions-gh-pages@v2
         if: always()
         env:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
