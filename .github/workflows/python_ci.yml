@@ -33,10 +33,10 @@ jobs:
         if: always()
         id: allure-report
         with:
-          allure-results: allure-results
-          allure-report: allure-report
+          allure_results: allure-results
+          allure_report: allure-report
           gh_pages: gh-pages
-          allure-history: allure-history
+          allure_history: allure-history
 
       - name: Publish report
         uses: peaceiris/actions-gh-pages@v2
