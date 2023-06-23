@@ -1,17 +1,30 @@
+name: Automated tests
+
 on:
-  - push
-  - pull_request
+  workflow_dispatch:
+    inputs:
+      deployment_target:
+        description: Choose tests
+        required: true
+        default:
+        type: choice
+        options:
+          - tests_for_example_ci
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@main
-      - uses: actions/setup-python@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - name: Run tests
+
+      - name: Run autotests in docker container
+        if: "github.event.inputs.deployment_target == 'tests_for_example_ci'"
+        run: docker-compose up --build
         env:
-          TP_API_KEY: ${{ secrets.TP_API_KEY }} # < Let Secrets handle your keys
-        run: |
-          docker-compose up --build
+          TP_API_KEY: ${{ secrets.TP_API_KEY }}
