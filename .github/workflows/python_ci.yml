@@ -32,26 +32,26 @@ jobs:
         env:
           TP_API_KEY: ${{ secrets.TP_API_KEY }}
 
-      - name: Generate Allure Report
+      - name: Generate Allure Results
         run: docker cp $(docker ps -a -q | head -1):/example_framework/allure_results .
 
-      - name: Run Allure Report
-        run: allure serve allure_results
+#      - name: Run Allure Report
+#        run: allure serve allure_results
 
-#      - name: Generate Allure Report
-#        uses: simple-elf/allure-report-action@master
-#        if: always()
-#        id: allure-report
-#        with:
-#          allure_results: allure-results
-#          allure_report: allure-report
-#          gh_pages: gh-pages
-#          allure_history: allure-history
-#
-#      - name: Publish report
-#        uses: peaceiris/actions-gh-pages@v2
-#        if: always()
-#        env:
-#          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          PUBLISH_BRANCH: gh-pages
-#          PUBLISH_DIR: allure-history
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
+          gh_pages: gh-pages
+          allure_history: allure-history
+
+      - name: Publish report
+        uses: peaceiris/actions-gh-pages@v2
+        if: always()
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
