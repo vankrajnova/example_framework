@@ -15,9 +15,7 @@ jobs:
         env:
           TP_API_KEY: ${{ secrets.TP_API_KEY }} # < Let Secrets handle your keys
         run: |
-          envsubst < .github/ci/docker-compose.yml > docker-compose.yml
-          cat docker-compose.yml
-          docker-compose -f docker-compose.yml up -d
+          docker-compose up --build
       - name: Wait for Agent to Register
         run: bash .github/ci/wait_for_agent.sh
       - run: pytest
