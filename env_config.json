@@ -1,23 +1,23 @@
 {
   "db": {
-    "host": "10.210.48.16",
-    "port": "32399",
+    "host": "localhost",
+    "port": "5432",
     "name": "db_staff",
     "user": "inrights",
     "pwd": "Qwe12345",
     "type": "postgresql"
   },
   "config": {
-    "ip": "10.210.48.16",
-    "port": "32737",
+    "ip": "localhost",
+    "port": "8080",
     "admin_login": "administrator",
-    "admin_pwd": "5ecr3t",
-    "pwsh_ip": "10.210.48.67",
-    "pwsh_login": "inrights/administrator",
-    "pwsh_pwd": "Qwe12345",
+    "admin_pwd": "qwe12345",
+    "pwsh_ip": "localhost",
+    "pwsh_login": "administrator",
+    "pwsh_pwd": "qwe12345",
     "ad_org_unit": "AutoTest7",
     "browser": "chrome",
-    "interactive_mode": true
+    "interactive_mode": false
   },
   "action_mode": "REST"
 }

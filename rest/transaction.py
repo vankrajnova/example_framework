@@ -12,7 +12,7 @@ from rest.exceptions import error_by_status_code
 from useful_methods.representation import pretty_json, shorten_str
 
 
-TIMEOUT = 60
+TIMEOUT = 15
 STEP_TIME = 0.2
 
 
@@ -22,7 +22,7 @@ class RestTransaction:
         self._app = app
         self.name = transaction_name
         self.response = None
-        self.event_log = [f"\nТранзакция: {self.name}"]
+        self.event_log = [f"\n[REST] Транзакция: {self.name}"]
         self.rest_session = requests.session()
 
     def clean_log(self):
