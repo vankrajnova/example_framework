@@ -5,7 +5,7 @@ pipeline {
         steps {
     	catchError {
       	   script {
-        	      docker.build("python-web-tests", "-f Dockerfile .")
+        	      docker.build("automation-tests", "-f Dockerfile .")
       	     }
           }
        }
