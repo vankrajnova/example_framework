@@ -12,13 +12,8 @@ pipeline {
     }
      stage('Run tests') {
         steps {
-           catchError {
-              script {
-              	docker.image('python-web-tests') {
-                    	sh "pytest -n 2 --reruns 1 ${CMD_PARAMS}"
-                   }
-        	     }
-      	    }
+           sh "docker run automation-tests pytest -s ${SUITE_NAME}"
+           sh "sudo chmod -R 777 allure-results"
          }
      }
      stage('Reports') {
