@@ -33,7 +33,7 @@ jobs:
           TP_API_KEY: ${{ secrets.TP_API_KEY }}
 
       - name: Generate Allure Results
-        run: docker cp $(docker ps -a -q | head -1):/example_framework/allure_results .
+        run: docker cp $(docker ps -a -q | head -1):/example_framework/allure-results .
 
 #      - name: Run Allure Report
 #        run: allure serve allure_results
