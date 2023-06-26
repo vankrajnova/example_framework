@@ -16,7 +16,6 @@ pipeline {
               script {
               	docker.image('python-web-tests') {
                     	sh "pytest -n 2 --reruns 1 ${CMD_PARAMS}"
-                	    }
                    }
         	     }
       	    }
