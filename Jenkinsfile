@@ -12,7 +12,14 @@ pipeline {
     }
      stage('Run tests') {
         steps {
-            sh "docker run automation-tests"
+           catchError {
+              script {
+              	docker.image('python-web-tests') {
+                    	sh "pytest -n 2 --reruns 1 ${CMD_PARAMS}"
+                	    }
+                   }
+        	     }
+      	    }
          }
      }
      stage('Reports') {
