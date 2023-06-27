@@ -33,5 +33,4 @@ pipeline {
             sh "docker rm docker_autotests"
             }
         }
-     }
 }
