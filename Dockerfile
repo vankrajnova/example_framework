@@ -1,12 +1,10 @@
-FROM python
+FROM python:3.10
+ARG path=/app
+ARG PROJECT='autotest'
+WORKDIR $path/$PROJECT
 
-WORKDIR /example_framework/
-
-#VOLUME /allure_results
-
-COPY . .
-
+COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-
-CMD ["pytest", "--alluredir=./allure-results"]
+COPY . .
+CMD ["pytest", "--alluredir=./allure-results", "tests/tests/test_docker_and_ci.py"]

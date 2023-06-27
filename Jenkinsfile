@@ -1,19 +1,19 @@
 pipeline {
   agent any
-  stages {
-     stage("Build image") {
-        steps {
-    	catchError {
-      	   script {
-        	      docker.build("automation-tests", "-f Dockerfile .")
-      	     }
-          }
-       }
-    }
+//   stages {
+//      stage("Build image") {
+//         steps {
+//     	catchError {
+//       	   script {
+//         	      docker.build("automation-tests", "-f Dockerfile .")
+//       	     }
+//           }
+//        }
+//     }
      stage('Run tests') {
         steps {
-           sh "docker run automation-tests pytest -v ${SUITE_NAME} --alluredir=${WORKSPACE}/allure-results"
-//            sh "sudo chmod -R 777 allure-results"
+           sh "docker-compose up -d --build"
+           sh "sudo chmod -R 777 allure-results"
          }
      }
      stage('Reports') {
