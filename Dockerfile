@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD pytest --alluredir=allure-results
+CMD ["pytest", "--alluredir=allure-results"]
