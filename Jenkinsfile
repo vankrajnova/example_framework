@@ -12,7 +12,7 @@ pipeline {
     }
      stage('Run tests') {
         steps {
-           sh "docker run automation-tests pytest -v ${SUITE_NAME}"
+           sh "docker run automation-tests pytest -v ${SUITE_NAME} --alluredir=${WORKSPACE}/allure-results"
 //            sh "sudo chmod -R 777 allure-results"
          }
      }
