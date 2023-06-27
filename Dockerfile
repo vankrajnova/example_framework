@@ -10,4 +10,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD pytest -s -v tests/test_docker_and_ci.py --alluredir=allure_results
+CMD pytest --alluredir=allure_results
