@@ -2,7 +2,7 @@ FROM python
 
 WORKDIR /example_framework/
 
-VOLUME /allure_results
+#VOLUME /allure_results
 
 COPY . .
 
