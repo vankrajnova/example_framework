@@ -13,7 +13,7 @@ pipeline {
      stage('Run tests') {
         steps {
            sh "docker run automation-tests pytest -v ${SUITE_NAME}"
-           sh "docker cp $(docker ps -a -q | head -1):${WORKDIR}/allure_results ."
+           sh "docker cp $(docker ps -a -q | head -1):${WORKSPACE}/allure_results ."
          }
      }
      stage('Reports') {
