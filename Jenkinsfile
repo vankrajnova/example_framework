@@ -27,10 +27,11 @@ pipeline {
     	   ])
   	        }
          }
-     post {
-        always {
+     stage('Post actions') {
+        steps {
             sh "docker stop docker_autotests"
             sh "docker rm docker_autotests"
-            }
-        }
+         }
+     }
+     }
 }
