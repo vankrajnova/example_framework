@@ -13,7 +13,7 @@ pipeline {
      stage('Run tests') {
         steps {
            sh "docker run automation-tests pytest -v ${SUITE_NAME}"
-           sh "sudo chmod -R 777 allure-results"
+//            sh "sudo chmod -R 777 allure-results"
          }
      }
      stage('Reports') {

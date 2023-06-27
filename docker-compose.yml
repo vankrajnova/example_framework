@@ -1,11 +1,11 @@
 version: '3.3'
 
 services:
-  autotest:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    env_file:
-      - ./.env
+  test-runner:
+    build: .
+    image: pytest_runner
+    container_name: pytest_runner_works
+    environment:
+      - ENV=dev
     volumes:
-      - "./allure-results/:/app/autotest/allure-results/"
+      - .:/example_framework/

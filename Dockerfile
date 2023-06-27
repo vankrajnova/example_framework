@@ -1,7 +1,6 @@
 FROM python
-ARG path=/app
-ARG PROJECT='autotest'
-WORKDIR $path/$PROJECT
+
+WORKDIR /example_framework/
 
 #VOLUME /allure_results
 
