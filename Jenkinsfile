@@ -12,8 +12,8 @@ pipeline {
     }
      stage('Run tests') {
         steps {
-           sh "docker run automation-tests pytest -v ${SUITE_NAME}"
-           sh "docker cp $(docker ps -a -q | head -1):${WORKSPACE}/allure_results ."
+           sh "docker run --name docker_autotests automation-tests pytest -v ${SUITE_NAME}"
+           sh "docker cp docker_autotests:${WORKSPACE}/allure_results ."
          }
      }
      stage('Reports') {
