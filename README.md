@@ -34,7 +34,7 @@ There is integration with Jenkins to run tests.
 - Add SUITE_NAME - path to test suite what you want to start
 - Click Build
 
-![img.png](img.png)
+![img](https://github.com/vankrajnova/example_framework/assets/18184719/e660a914-c6c9-4a8a-9cfa-08b66c59e699)
 
 **Job steps**:
 
@@ -45,8 +45,8 @@ There is integration with Jenkins to run tests.
 4. **Reports** - create a report and add to the build
 5. **Post actions** - stop docker container
 
-![img_1.png](img_1.png)
+![img_1](https://github.com/vankrajnova/example_framework/assets/18184719/4721b26a-1833-4c96-ad1a-de10f1cac345)
 
 **Allure report generated after build completes**
 
-![img_2.png](img_2.png)
+![img_2](https://github.com/vankrajnova/example_framework/assets/18184719/2a0c1f39-c11b-4b63-9a2e-597cd20988c8)
