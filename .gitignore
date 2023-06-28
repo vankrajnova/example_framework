@@ -37,4 +37,4 @@ env.bak/
 venv.bak/
 
 # Some pictures
-.png
+*.png

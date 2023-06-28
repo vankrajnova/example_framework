@@ -1,5 +1,6 @@
 from model import User, Orgunit, Position
 
+# Some static objects for tests. The objects saved in DB backup.
 
 class BaseFixture:
 

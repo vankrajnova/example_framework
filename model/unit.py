@@ -38,20 +38,6 @@ class Node:
     def get_base_roles(self):
         return self._base_roles
 
-    # def add_base_role(self, role: model.role.Role, is_by_request=False):
-    #     for base_role in self._base_roles:
-    #         if base_role.name == role.name:
-    #             return True
-    #     base_role = model.role.BaseRole(role=role, by_request=is_by_request, assigned_to_unit=self)
-    #     self._base_roles.append(base_role)
-    #
-    # def remove_base_role(self, role: model.role.Role):
-    #     for base_role in self._base_roles:
-    #         if base_role.name == role.name:
-    #             self._base_roles.remove(base_role)
-    #             return True
-    #     raise Exception(f"Не получилось удалить {role}, т.к. она не найдена")
-
     def get_parent_chain_as_lines(self):
         parent_chain = self.get_parent_chain()
         lines = []

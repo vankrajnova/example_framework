@@ -35,14 +35,14 @@ class Application:
             return True
         except Exception as e:
             print(e)
-            print('\nTimeoutException при попытке залогиниться (перед запуском теста)')
+            print('\nTimeoutException when trying to login (before running the test)')
         return False
 
     def reopen(self):
         try:
             self.driver.quit()
         except Exception:
-            print('\nПроизошёл сбой при попытке выполнить команду: "self.driver.quit()"')
+            print('\nAn error occurred while trying to execute the command: "self.driver.quit()"')
         self.initialize()
         self.forms.auth.login_as_admin()
 
@@ -51,7 +51,7 @@ class Application:
         if self.action_mode == 'UI':
             return self._driver
         else:
-            raise Exception(f'Во время {self.action_mode}-прогона произошло обращение к WebDriver')
+            raise Exception(f'WebDriver was called during {self.action_mode} action mode')
 
     def start_new_rest_transaction(self, transaction_name) -> RestTransaction:
         return RestTransaction(self, transaction_name)

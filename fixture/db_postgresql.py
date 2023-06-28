@@ -54,12 +54,12 @@ class Postgresql:
         return user
 
     def _create_user_with_employment_in_hr(self, user):
-        """Создаёт пользователя и ТУ"""
+        """Create user and employment"""
         self._create_user_in_hr(user)
         self._create_employment_in_hr(user)
 
     def _create_user_in_hr(self, user):
-        """Создает запись о пользователе без ТУ в таблице staff"""
+        """Create row about user without employment in table 'staff'"""
         cursor = self.connection.cursor()
         try:
             sql = "INSERT INTO staff VALUES" \
@@ -70,7 +70,7 @@ class Postgresql:
             self.connection.commit()
 
         except (Exception, psycopg2.Error) as error:
-            print("Ошибка при выполнении SQL запроса", error)
+            print("Error while executing SQL query", error)
         finally:
             cursor.close()
 
@@ -101,12 +101,12 @@ class Postgresql:
             self.connection.commit()
 
         except (Exception, psycopg2.Error) as error:
-            print("Ошибка при выполнении SQL запроса", error)
+            print("Error while executing SQL query", error)
         finally:
             cursor.close()
 
     def _get_employee_numbers(self) -> list:
-        """Возвращает список employee_number всех пользователей из таблицы staff"""
+        """Returns the employee_number list of all users from the 'staff' table"""
         cursor = self.connection.cursor()
         converter = []
 
@@ -121,7 +121,7 @@ class Postgresql:
                 converter.append(record)
 
         except (Exception, psycopg2.Error) as error:
-            print("Ошибка при выполнении SQL запроса", error)
+            print("Error while executing SQL query", error)
 
         finally:
             cursor.close()
@@ -129,7 +129,7 @@ class Postgresql:
         return user_ids_list
 
     def _get_unique_ids(self) -> list:
-        """Возвращает список unique_id всех ТУ из таблицы employment"""
+        """Returns a list of unique_id of all employments from the 'employment' table"""
         cursor = self.connection.cursor()
         converter = []
 
@@ -144,7 +144,7 @@ class Postgresql:
                 converter.append(record)
 
         except (Exception, psycopg2.Error) as error:
-            print("Ошибка при выполнении SQL запроса", error)
+            print("Error while executing SQL query", error)
 
         finally:
             cursor.close()
